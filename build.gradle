@@ -1,0 +1,50 @@
+apply from: 'gradle/allprojects.gradle'
+
+buildscript {
+
+    ext {
+        kotlin_version = '1.5.0'
+        jvm_version = '1.8'
+        scala_version = '2.12'
+    }
+
+    repositories {
+        jcenter()
+        mavenLocal()
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'maven-publish'
+
+
+    dependencies {
+        implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    }
+
+    sourceCompatibility = jvm_version
+
+    publishing {
+        publications {
+            maven(MavenPublication) {
+                from(components.java)
+            }
+        }
+    }
+
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+    }
+
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+        kotlinOptions {
+            jvmTarget = jvm_version
+        }
+    }
+}
